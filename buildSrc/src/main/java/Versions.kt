@@ -3,6 +3,7 @@ object Versions {
 
     const val COMPILE_SDK = 32
     const val TARGET_SDK = 32
+    const val MINIMUM_SDK = 26
     const val BUILD_TOOLS = "32.0.0"
 
     const val GRADLE = "7.1.2"

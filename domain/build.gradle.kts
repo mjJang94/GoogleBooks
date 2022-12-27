@@ -11,7 +11,7 @@ android {
     compileSdk = Versions.COMPILE_SDK
 
     defaultConfig {
-        minSdk = 24
+        minSdk = Versions.MINIMUM_SDK
         targetSdk = Versions.TARGET_SDK
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -38,7 +38,6 @@ dependencies {
     implementation ("androidx.core:core-ktx:${Versions.CORE}")
     implementation ("androidx.appcompat:appcompat:${Versions.APP_COMPAT}")
     implementation ("com.google.android.material:material:${Versions.MATERIAL}")
-    implementation ("androidx.paging:paging-runtime-ktx:${Versions.PAGING}")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -46,11 +45,6 @@ dependencies {
     //hilt
     implementation ("com.google.dagger:hilt-android:${Versions.HILT}")
     kapt ("com.google.dagger:hilt-compiler:${Versions.HILT}")
-
-    //room
-    implementation ("androidx.room:room-runtime:${Versions.ROOM}")
-    implementation ("androidx.room:room-ktx:${Versions.ROOM}")
-    kapt ("androidx.room:room-compiler:${Versions.ROOM}")
 
     //Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}")
