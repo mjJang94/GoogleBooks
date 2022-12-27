@@ -1,7 +1,8 @@
 package com.mj.domain.repository
 
 import com.mj.domain.model.Book
+import kotlinx.coroutines.flow.Flow
 
 interface BookRepository {
-    fun searchBook(query: String): Book
+    suspend fun searchBook(query: String, currentIndex: Long): Flow<Book>
 }

@@ -16,10 +16,10 @@ private fun List<BookData>.formalize(): List<BookItem> =
     this.map { item ->
         BookItem(
             id = item.id,
-            title = item.bookInfo.title,
-            authors = item.bookInfo.authors.joinToString(", ", "by "),
-            publishedDate = item.bookInfo.publishedDate,
-            imageLinks = item.bookInfo.imageLinks.smallThumbnail,
-            detailLink = item.bookInfo.infoLink
+            title = item.bookInfo.title ?: "",
+            authors = item.bookInfo.authors?.joinToString(", ", "by ") ?: "",
+            publishedDate = item.bookInfo.publishedDate ?: "",
+            imageLinks = item.bookInfo.imageLinks?.smallThumbnail ?: "",
+            detailLink = item.bookInfo.infoLink ?: ""
         )
     }

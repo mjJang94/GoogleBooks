@@ -1,7 +1,8 @@
 package com.mj.data.datasource
 
 import com.mj.data.model.BookResponse
+import kotlinx.coroutines.flow.Flow
 
 interface BookRemoteDataSource {
-    fun requestBooksData(query: String): BookResponse
+    suspend fun requestBooksData(query: String, currentIndex: Long): Flow<BookResponse>
 }

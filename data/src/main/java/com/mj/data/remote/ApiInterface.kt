@@ -9,13 +9,16 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiInterface {
 
-    @GET("/v1/volumes")
-    fun getBooks(
+    @GET("/books/v1/volumes")
+    suspend fun getBooks(
         @Query("q") query: String,
+        @Query("startIndex") startIndex: Long,
+//        @Query("maxResults") maxResults: Int = 20,
         @Query("key") key: String = API_KEY
     ): BookResponse
 
@@ -30,8 +33,6 @@ interface ApiInterface {
             val interceptor = Interceptor { chain ->
                 with(chain) {
                     val newRequest = request().newBuilder()
-                        .addHeader("", "")
-                        .addHeader("", "")
                         .build()
                     proceed(newRequest)
                 }
