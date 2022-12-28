@@ -16,7 +16,6 @@ object Versions {
     const val FRAGMENT = "1.5.0"
     const val LIFECYCLE = "2.5.0"
     const val RECYCLERVIEW = "1.2.1"
-    const val PAGING = "3.1.1"
     const val MATERIAL = "1.6.1"
     const val COLLECTION = "1.2.0"
 
@@ -28,8 +27,6 @@ object Versions {
     const val HILT = "2.41"
 
     const val GLIDE = "4.13.2"
-
-    const val ROOM = "2.4.3"
 
     const val TIMBER = "4.7.1"
 }
