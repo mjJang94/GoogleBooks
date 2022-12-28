@@ -7,31 +7,28 @@
     tools:context=".ui.SearchBookActivity"
     tools:ignore="SpUsage">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
-
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/input"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="책 검색어를 입력해주세요"
+        android:layout_height="50dp"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionDone"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/total"
         app:layout_constraintEnd_toStartOf="@+id/search"
         app:layout_constraintHorizontal_weight="8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/search"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="검색"
-        app:layout_constraintBottom_toTopOf="@id/guideline"
+        android:layout_height="50dp"
+        android:text="@string/search"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/total"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toEndOf="@+id/input"
@@ -41,17 +38,19 @@
         android:id="@+id/total"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/total_result_01"
         android:textSize="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/rcy_books"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/input"
         tools:text="검색결과 : 540" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcy_books"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

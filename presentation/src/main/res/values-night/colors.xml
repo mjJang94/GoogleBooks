@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="total_result_01">#FFFFFF</color>
     <color name="title_01">#FFFFFF</color>
     <color name="author_01">#BCBCBC</color>
     <color name="date_01">#939393</color>
