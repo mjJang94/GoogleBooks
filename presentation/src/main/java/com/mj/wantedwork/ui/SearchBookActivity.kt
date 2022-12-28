@@ -8,17 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView
 import com.mj.wantedwork.R
 import com.mj.wantedwork.databinding.ActivitySearchBinding
 import com.mj.wantedwork.ui.SearchBookViewModel.SearchUIEvent.*
-import com.mj.wantedwork.util.hideKeyboard
-import com.mj.wantedwork.util.setGone
-import com.mj.wantedwork.util.setVisible
-import com.mj.wantedwork.util.toast
+import com.mj.wantedwork.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -27,72 +22,53 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = lifecycleScope.coroutineContext
 
-    private lateinit var binding: ActivitySearchBinding
-    private lateinit var adapter: SearchBookAdapter
     private val viewModel: SearchBookViewModel by viewModels()
-
-    private var currentIndex = 0L
+    private val binding: ActivitySearchBinding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
+    private val adapter: SearchBookAdapter by lazy {
+        SearchBookAdapter { link ->
+            openDetailLink(link)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initViewBinding()
-        initView()
+        setContentView(binding.root)
+        initViews()
         observeData()
     }
 
-    private fun initViewBinding() {
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-    }
-
-    private fun initView() {
-
-        adapter = SearchBookAdapter { link ->
-            openDetailLink(link)
-        }
+    private fun initViews() {
 
         binding.rcyBooks.adapter = adapter
         binding.rcyBooks.setHasFixedSize(true)
-        binding.rcyBooks.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!binding.rcyBooks.canScrollVertically(5)){
-                    val query = binding.input.text.toString().trim()
-                    currentIndex += 20
-                    viewModel.search(query, currentIndex)
-                }
-            }
-        })
-//        binding.rcyBooks.addOnScrollListener(object: RecyclerViewPaginator(binding.rcyBooks){
-//            override val isLastPage: Boolean
-//                get() = false
-//
-//            override fun loadMore(currentSize: Long) {
-//                val query = binding.input.text.toString().trim()
-//                viewModel.search(query, currentSize)
-//            }
-//        })
+        binding.rcyBooks.setLinearEndlessScroll { currentSize ->
+            viewModel.requestPagingBooks(currentSize)
+        }
 
         binding.search.setOnClickListener {
             val query = binding.input.text.toString().trim()
-            currentIndex = 0
-
-            when (query.isEmpty()) {
-                true -> toast("검색어를 입력해주세요.")
-                else -> {
-                    it.hideKeyboard()
-                    viewModel.search(query, currentIndex)
-                }
-            }
+            viewModel.requestBooks(query)
+            it.hideKeyboard()
         }
     }
 
     private fun observeData() {
-        launch {
-            viewModel.booksDataFlow.collectLatest { book ->
-                binding.total.text = getString(R.string.search_result_counts, book.totalCount)
-                adapter.submitList(book.items)
-            }
+
+        viewModel.bookList.observe(this) { bookItem ->
+            /**
+             *  if (newList == mList) {
+             * // nothing to do (Note - still had to inc generation, since may have ongoing work)
+             *   if (commitCallback != null) {
+             *      commitCallback.run();
+             *    }
+             *   return;
+             * }
+             */
+            adapter.submitList(bookItem.toMutableList())
+        }
+
+        viewModel.totalCount.observe(this) { totalCount ->
+            binding.total.text = getString(R.string.search_result_counts, totalCount)
         }
 
         launch {
@@ -101,6 +77,7 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
                     when (event) {
                         is Loading -> onLoading()
                         is Success -> onSuccess()
+                        is Empty -> onEmptyQuery()
                         is Error -> onError(event.msg)
                     }
                 }
@@ -114,7 +91,11 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
 
     private fun onError(msg: String?) = with(binding) {
         progress.setGone()
-        toast(msg ?: "알 수 없는 에러가 발생했습니다.")
+        toast(msg ?: getString(R.string.unknown_error_msg))
+    }
+
+    private fun onEmptyQuery() {
+        toast(getString(R.string.insert_query))
     }
 
     private fun onSuccess() = with(binding) {

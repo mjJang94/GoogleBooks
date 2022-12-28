@@ -2,15 +2,13 @@ package com.mj.wantedwork.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
 import com.mj.domain.model.BookItem
-import com.mj.wantedwork.R
 import com.mj.wantedwork.databinding.RowSearchBookBinding
+import com.mj.wantedwork.util.loadUrl
+import com.mj.wantedwork.util.setTextOrNonEmpty
 
 class SearchBookAdapter(
     private val showDetail: (String) -> Unit,
@@ -28,18 +26,12 @@ class SearchBookAdapter(
     }
 
     inner class SearchBookViewHolder(private val binding: RowSearchBookBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: BookItem){
-            with(binding){
-                title.text = item.title
-                author.text = item.authors
-                date.text = item.publishedDate
-
-                Glide.with(thumbnail.context)
-                    .load(item.imageLinks)
-                    .skipMemoryCache(false)
-                    .error(R.drawable.image_not_supported)
-                    .format(DecodeFormat.PREFER_RGB_565)
-                    .into(thumbnail)
+        fun bind(item: BookItem) {
+            with(binding) {
+                title.setTextOrNonEmpty(item.title)
+                author.setTextOrNonEmpty(item.authors)
+                date.setTextOrNonEmpty(item.publishedDate)
+                thumbnail.loadUrl(item.imageLinks)
 
                 container.setOnClickListener {
                     showDetail.invoke(item.detailLink)
