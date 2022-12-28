@@ -1,14 +1,14 @@
 package com.mj.wantedwork.ui
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.mj.domain.model.Book
+import com.mj.domain.model.BookItem
 import com.mj.domain.usecase.SearchBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -23,36 +23,59 @@ class SearchBookViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = viewModelScope.coroutineContext
 
-    private val _searchFlow = MutableSharedFlow<Pair<String, Long>>()
-    private val _search = _searchFlow.asLiveData()
-
     private val _uiEventFlow = MutableSharedFlow<SearchUIEvent>()
     val uiEventFlow = _uiEventFlow.asSharedFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val booksDataFlow = _searchFlow
-        .flatMapLatest { (query, currentIndex) ->
-            Timber.e("query: $query", "currentIndex: $currentIndex")
-            searchBooks(query, currentIndex)
-        }.flowOn(Dispatchers.IO)
-        .onStart { triggerUIEvent(SearchUIEvent.Loading) }
-        .onCompletion { triggerUIEvent(SearchUIEvent.Success) }
-        .catch { error ->
-            Timber.e(error.message)
-            triggerUIEvent(SearchUIEvent.Error(error.message))
-        }
+    private val _bookList = MutableLiveData<MutableList<BookItem>>()
+    val bookList: LiveData<MutableList<BookItem>> get() = _bookList
 
+    private val _totalCount = MutableLiveData<Int>()
+    val totalCount: LiveData<Int> get() = _totalCount
 
-    fun search(query: String, currentIndex: Long) {
-        launch {
-            _searchFlow.emit(query to currentIndex)
+    private val _latestQuery = MutableLiveData<String>()
+
+    fun requestBooks(query: String) {
+        launch(Dispatchers.Default) {
+            Timber.d("query: $query, current offset: 0")
+            if (query.isEmpty()) {
+                eventTrigger(SearchUIEvent.Empty)
+                return@launch
+            }
+            _latestQuery.postValue(query)
+            searchBookUseCase.searchBook(query, 0)
+                .flowOn(Dispatchers.IO)
+                .onStart { eventTrigger(SearchUIEvent.Loading) }
+                .onCompletion { eventTrigger(SearchUIEvent.Success) }
+                .catch { error ->
+                    Timber.e(error.message)
+                    eventTrigger(SearchUIEvent.Error(error.message))
+                }.collect { books ->
+                    _totalCount.postValue(books.totalCount)
+                    _bookList.postValue(books.items.toMutableList())
+                }
         }
     }
 
-    private suspend fun searchBooks(query: String, currentIndex: Long): Flow<Book> =
-        searchBookUseCase.searchBook(query, currentIndex)
+    fun requestPagingBooks(offset: Int) {
+        launch(Dispatchers.Default) {
+            val query = _latestQuery.value ?: return@launch
+            Timber.d("query: $query, current offset: $offset")
+            searchBookUseCase.searchBook(query, offset)
+                .flowOn(Dispatchers.IO)
+                .onStart { eventTrigger(SearchUIEvent.Loading) }
+                .onCompletion { eventTrigger(SearchUIEvent.Success) }
+                .catch { error ->
+                    Timber.e(error.message)
+                    eventTrigger(SearchUIEvent.Error(error.message))
+                }.collect { books ->
+                    val pagingBookList = _bookList.value ?: emptyList<BookItem>().toMutableList()
+                    pagingBookList.addAll(books.items)
+                    _bookList.postValue(pagingBookList)
+                }
+        }
+    }
 
-    private suspend fun triggerUIEvent(event: SearchUIEvent) {
+    private suspend fun eventTrigger(event: SearchUIEvent) {
         _uiEventFlow.emit(event)
     }
 
@@ -60,5 +83,6 @@ class SearchBookViewModel @Inject constructor(
         data class Error(val msg: String?) : SearchUIEvent()
         object Loading : SearchUIEvent()
         object Success : SearchUIEvent()
+        object Empty: SearchUIEvent()
     }
 }

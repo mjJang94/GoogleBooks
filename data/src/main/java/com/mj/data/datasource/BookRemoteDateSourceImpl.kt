@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class BookRemoteDateSourceImpl @Inject constructor(private val api: ApiInterface): BookRemoteDataSource {
-    override suspend fun requestBooksData(query: String, currentIndex: Long) = flow {
+    override suspend fun requestBooksData(query: String, currentIndex: Int) = flow {
         emit(api.getBooks(query, currentIndex))
     }
 }
