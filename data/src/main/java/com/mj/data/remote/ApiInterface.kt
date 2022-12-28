@@ -3,6 +3,9 @@ package com.mj.data.remote
 import com.mj.data.model.BookResponse
 import com.mj.data.remote.ApiClient.API_KEY
 import com.mj.data.remote.ApiClient.BASE_URL
+import com.mj.data.remote.ApiClient.DEFAULT_PRINT_TYPE
+import com.mj.data.remote.ApiClient.DEFAULT_PROJECTION
+import com.mj.data.remote.ApiClient.DEFAULT_RESULT_SIZE
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,17 +20,18 @@ interface ApiInterface {
     @GET("/books/v1/volumes")
     suspend fun getBooks(
         @Query("q") query: String,
-        @Query("startIndex") startIndex: Long,
-//        @Query("maxResults") maxResults: Int = 20,
-        @Query("key") key: String = API_KEY
+        @Query("startIndex") startIndex: Int,
+        @Query("maxResults") maxResults: Int = DEFAULT_RESULT_SIZE,
+        @Query("printType") printType: String = DEFAULT_PRINT_TYPE,
+        @Query("projection") projection: String = DEFAULT_PROJECTION,
+        @Query("key") key: String = API_KEY,
     ): BookResponse
 
     companion object {
 
         fun create(): ApiInterface {
             val logger = HttpLoggingInterceptor().apply {
-                level =
-                    HttpLoggingInterceptor.Level.BASIC
+                level = HttpLoggingInterceptor.Level.BASIC
             }
 
             val interceptor = Interceptor { chain ->
