@@ -8,7 +8,7 @@ import com.mj.domain.model.BookItem
 fun BookResponse.mapperToBook(): Book = with(this) {
     Book(
         totalCount = totalItems,
-        items = items.formalize()
+        items = items?.formalize() ?: emptyList()
     )
 }
 
@@ -16,10 +16,12 @@ private fun List<BookData>.formalize(): List<BookItem> =
     this.map { item ->
         BookItem(
             id = item.id,
-            title = item.bookInfo.title ?: "",
-            authors = item.bookInfo.authors?.joinToString(", ", "by ") ?: "",
-            publishedDate = item.bookInfo.publishedDate ?: "",
-            imageLinks = item.bookInfo.imageLinks?.smallThumbnail ?: "",
-            detailLink = item.bookInfo.infoLink ?: ""
+            title = item.bookInfo.title.getOrBlank(),
+            authors = item.bookInfo.authors?.joinToString(", ", "by ").getOrBlank(),
+            publishedDate = item.bookInfo.publishedDate.getOrBlank(),
+            imageLinks = item.bookInfo.imageLinks?.smallThumbnail.getOrBlank(),
+            detailLink = item.bookInfo.infoLink.getOrBlank()
         )
     }
+
+private fun String?.getOrBlank(): String = if (this.isNullOrEmpty()) "" else this
