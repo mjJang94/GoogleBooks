@@ -12,6 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -48,7 +50,11 @@ class SearchBookViewModel @Inject constructor(
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
                     Timber.e(error.message)
-                    eventTrigger(SearchUIEvent.Error(error.message))
+                    val event = when (error) {
+                        is ConnectException, is UnknownHostException -> SearchUIEvent.Disconnect
+                        else -> SearchUIEvent.Error(error.message)
+                    }
+                    eventTrigger(event)
                 }.collect { books ->
                     _totalCount.postValue(books.totalCount)
                     _bookList.postValue(books.items.toMutableList())
@@ -66,7 +72,11 @@ class SearchBookViewModel @Inject constructor(
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
                     Timber.e(error.message)
-                    eventTrigger(SearchUIEvent.Error(error.message))
+                    val event = when (error) {
+                        is ConnectException, is UnknownHostException -> SearchUIEvent.Disconnect
+                        else -> SearchUIEvent.Error(error.message)
+                    }
+                    eventTrigger(event)
                 }.collect { books ->
                     val pagingBookList = _bookList.value ?: emptyList<BookItem>().toMutableList()
                     pagingBookList.addAll(books.items)
@@ -83,6 +93,7 @@ class SearchBookViewModel @Inject constructor(
         data class Error(val msg: String?) : SearchUIEvent()
         object Loading : SearchUIEvent()
         object Success : SearchUIEvent()
-        object Empty: SearchUIEvent()
+        object Empty : SearchUIEvent()
+        object Disconnect : SearchUIEvent()
     }
 }

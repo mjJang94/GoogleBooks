@@ -5,5 +5,6 @@
     <string name="search_hint">책 정보를 입력해주세요.</string>
     <string name="search_result_counts">검색 결과: %s</string>
     <string name="insert_query">검색어를 입력해 주세요.</string>
+    <string name="check_network">인터넷 연결 상태를 확인해 주세요.</string>
     <string name="unknown_error_msg">알 수 없는 에러가 발생했습니다.</string>
 </resources>
