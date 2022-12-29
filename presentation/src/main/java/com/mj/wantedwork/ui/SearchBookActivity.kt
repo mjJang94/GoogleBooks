@@ -5,9 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.mj.wantedwork.R
 import com.mj.wantedwork.databinding.ActivitySearchBinding
 import com.mj.wantedwork.ui.SearchBookViewModel.SearchUIEvent.*
@@ -72,14 +70,13 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
         }
 
         launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEventFlow.collect { event ->
-                    when (event) {
-                        is Loading -> onLoading()
-                        is Success -> onSuccess()
-                        is Empty -> onEmptyQuery()
-                        is Error -> onError(event.msg)
-                    }
+            viewModel.uiEventFlow.collect { event ->
+                when (event) {
+                    is Loading -> onLoading()
+                    is Success -> onSuccess()
+                    is Empty -> onEmptyQuery()
+                    is Disconnect -> onNetworkDisconnected()
+                    is Error -> onError(event.msg)
                 }
             }
         }
@@ -100,6 +97,10 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
 
     private fun onSuccess() = with(binding) {
         progress.setGone()
+    }
+
+    private fun onNetworkDisconnected() {
+        toast(getString(R.string.check_network))
     }
 
     private fun openDetailLink(link: String) {
