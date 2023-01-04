@@ -1,4 +1,4 @@
-## Google Books API를 활용한 도서 검색 앱 (원티드 과제)
+## Google Books API를 활용한 도서 검색 앱
 
 
 ### 기능 목록
