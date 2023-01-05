@@ -1,6 +1,7 @@
 package com.mj.wantedwork.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,31 +15,28 @@ class SearchBookAdapter(
     private val showDetail: (String) -> Unit,
 ) : ListAdapter<BookItem, SearchBookAdapter.SearchBookViewHolder>(comparator) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchBookViewHolder {
-        return SearchBookViewHolder(RowSearchBookBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
-
-    override fun onBindViewHolder(holder: SearchBookViewHolder, position: Int) {
-        getItem(position)?.let {
-            holder.bind(it)
-        }
-    }
-
-    inner class SearchBookViewHolder(private val binding: RowSearchBookBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: BookItem) {
+        val binding = RowSearchBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SearchBookViewHolder(binding.root) u@{ item ->
             with(binding) {
                 title.setTextOrNonEmpty(item.title)
                 author.setTextOrNonEmpty(item.authors)
                 date.setTextOrNonEmpty(item.publishedDate)
                 thumbnail.loadUrl(item.imageLinks)
-
                 container.setOnClickListener {
                     showDetail.invoke(item.detailLink)
                 }
             }
         }
     }
+
+    override fun onBindViewHolder(holder: SearchBookViewHolder, position: Int) {
+        getItem(position)?.let {
+            holder.update(it)
+        }
+    }
+
+    inner class SearchBookViewHolder(itemView: View, val update: (BookItem) -> Unit) : RecyclerView.ViewHolder(itemView)
 
     companion object {
         val comparator = object : DiffUtil.ItemCallback<BookItem>() {
