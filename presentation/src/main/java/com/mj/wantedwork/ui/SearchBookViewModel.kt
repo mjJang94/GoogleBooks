@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.mj.domain.model.BookItem
 import com.mj.domain.usecase.SearchBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,15 +14,11 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class SearchBookViewModel @Inject constructor(
     private val searchBookUseCase: SearchBookUseCase,
-) : ViewModel(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = viewModelScope.coroutineContext
+) : ViewModel() {
 
     private val _uiEventFlow = MutableSharedFlow<SearchUIEvent>()
     val uiEventFlow = _uiEventFlow.asSharedFlow()
@@ -37,7 +32,7 @@ class SearchBookViewModel @Inject constructor(
     private val _latestQuery = MutableLiveData<String>()
 
     fun requestBooks(query: String) {
-        launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             Timber.d("query: $query, current offset: 0")
             if (query.isEmpty()) {
                 eventTrigger(SearchUIEvent.Empty)
@@ -45,7 +40,6 @@ class SearchBookViewModel @Inject constructor(
             }
             _latestQuery.postValue(query)
             searchBookUseCase.searchBook(query, 0)
-                .flowOn(Dispatchers.IO)
                 .onStart { eventTrigger(SearchUIEvent.Loading) }
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
@@ -63,11 +57,10 @@ class SearchBookViewModel @Inject constructor(
     }
 
     fun requestPagingBooks(offset: Int) {
-        launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             val query = _latestQuery.value ?: return@launch
             Timber.d("query: $query, current offset: $offset")
             searchBookUseCase.searchBook(query, offset)
-                .flowOn(Dispatchers.IO)
                 .onStart { eventTrigger(SearchUIEvent.Loading) }
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
