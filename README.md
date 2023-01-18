@@ -48,9 +48,6 @@ MVVM + 클린 아키텍처
     
 - 과제 조건에 따라 `Paging`과 `DataBinding`을 사용하지 않았습니다. 단, 이에 따라 Activity 클래스의 코드가 불가피하게 증가하는 부분을 줄이고자 View Extension 함수들을 사용했습니다.   
 
-   
-- Domain, Data Layer간 데이터 맵핑 기능에 대한 Unit Test를 작성했습니다.   
-
 ----
 
 ### 유저 시나리오
