@@ -46,7 +46,7 @@ MVVM + 클린 아키텍처
 - ViewModel 클래스는 AAC의 상태 홀더 클래스지만 MVVM의 ViewModel의 역할을 수행하기 위해 1:N의 관계를 가져도 문제가 없도록 안드로이드 프레임워크에 최대한 독립적이게 만들었습니다.   
 
     
-- 과제 조건에 따라 `Paging`과 `DataBinding`을 사용하지 않았습니다. 단, 이에 따라 Activity 클래스의 코드가 불가피하게 증가하는 부분을 줄이고자 View Extension 함수들을 사용했습니다.   
+- 조건에 따라 `Paging`과 `DataBinding`을 사용하지 않았습니다. 단, 이에 따라 Activity 클래스의 코드가 불가피하게 증가하는 부분을 줄이고자 View Extension 함수들을 사용했습니다.   
 
 ----
 
