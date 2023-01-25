@@ -11,14 +11,10 @@ import com.mj.wantedwork.databinding.ActivitySearchBinding
 import com.mj.wantedwork.ui.SearchBookViewModel.SearchUIEvent.*
 import com.mj.wantedwork.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class SearchBookActivity : AppCompatActivity(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = lifecycleScope.coroutineContext
+class SearchBookActivity : AppCompatActivity() {
 
     private val viewModel: SearchBookViewModel by viewModels()
     private val binding: ActivitySearchBinding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
@@ -69,7 +65,7 @@ class SearchBookActivity : AppCompatActivity(), CoroutineScope {
             binding.total.text = getString(R.string.search_result_counts, totalCount)
         }
 
-        launch {
+        lifecycleScope.launch {
             viewModel.uiEventFlow.collect { event ->
                 when (event) {
                     is Loading -> onLoading()
