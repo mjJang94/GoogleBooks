@@ -1,4 +1,4 @@
-package com.mj.wantedwork.ui
+package com.mj.searchbook.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -6,10 +6,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.mj.wantedwork.R
-import com.mj.wantedwork.databinding.ActivitySearchBinding
-import com.mj.wantedwork.ui.SearchBookViewModel.SearchUIEvent.*
-import com.mj.wantedwork.util.*
+import com.mj.searchbook.R
+import com.mj.searchbook.databinding.ActivitySearchBinding
+import com.mj.searchbook.ui.SearchBookViewModel.SearchUIEvent.*
+import com.mj.searchbook.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

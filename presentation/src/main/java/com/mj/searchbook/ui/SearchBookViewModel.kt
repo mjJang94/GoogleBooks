@@ -1,4 +1,4 @@
-package com.mj.wantedwork.ui
+package com.mj.searchbook.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,7 +43,7 @@ class SearchBookViewModel @Inject constructor(
                 .onStart { eventTrigger(SearchUIEvent.Loading) }
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
-                    Timber.e(error.message)
+                    Timber.e(error)
                     val event = when (error) {
                         is ConnectException, is UnknownHostException -> SearchUIEvent.Disconnect
                         else -> SearchUIEvent.Error(error.message)
@@ -64,7 +64,7 @@ class SearchBookViewModel @Inject constructor(
                 .onStart { eventTrigger(SearchUIEvent.Loading) }
                 .onCompletion { eventTrigger(SearchUIEvent.Success) }
                 .catch { error ->
-                    Timber.e(error.message)
+                    Timber.e(error)
                     val event = when (error) {
                         is ConnectException, is UnknownHostException -> SearchUIEvent.Disconnect
                         else -> SearchUIEvent.Error(error.message)

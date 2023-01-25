@@ -1,4 +1,4 @@
-package com.mj.wantedwork.resource
+package com.mj.searchbook.resource
 
 import com.mj.data.model.BookData
 import com.mj.data.model.BookResponse

@@ -1,10 +1,10 @@
-package com.mj.wantedwork
+package com.mj.searchbook
 
 import com.mj.data.mapper.mapperToBook
 import com.mj.data.model.BookResponse
 import com.mj.domain.model.Book
 import com.mj.domain.model.BookItem
-import com.mj.wantedwork.resource.nullResponseMock
+import com.mj.searchbook.resource.nullResponseMock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 

@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    namespace = "com.mj.wantedwork"
+    namespace = "com.mj.searchbook"
     compileSdk = Versions.COMPILE_SDK
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        applicationId = "com.mj.wantedwork"
+        applicationId = "com.mj.searchbook"
         minSdk = Versions.MINIMUM_SDK
         targetSdk = Versions.TARGET_SDK
         versionCode = 1

@@ -1,8 +1,6 @@
-package com.mj.wantedwork.util
+package com.mj.searchbook.util
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -12,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
-import com.mj.wantedwork.R
+import com.mj.searchbook.R
 
 fun Context?.toast(text: CharSequence, duration: Int = Toast.LENGTH_SHORT) =
     this?.let { Toast.makeText(it, text, duration).show() }

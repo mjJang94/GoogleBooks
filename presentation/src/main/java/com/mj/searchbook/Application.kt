@@ -1,4 +1,4 @@
-package com.mj.wantedwork
+package com.mj.searchbook
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

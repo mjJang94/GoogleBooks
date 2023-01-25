@@ -1,4 +1,4 @@
-package com.mj.wantedwork.ui
+package com.mj.searchbook.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mj.domain.model.BookItem
-import com.mj.wantedwork.databinding.RowSearchBookBinding
-import com.mj.wantedwork.util.loadUrl
-import com.mj.wantedwork.util.setTextOrNonEmpty
+import com.mj.searchbook.databinding.RowSearchBookBinding
+import com.mj.searchbook.util.loadUrl
+import com.mj.searchbook.util.setTextOrNonEmpty
 
 class SearchBookAdapter(
     private val showDetail: (String) -> Unit,
